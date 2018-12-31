@@ -1,0 +1,1127 @@
+<!DOCTYPE HTML>
+<html>
+ <head>
+  <meta charset="utf-8"/>
+  <title>
+   Made with Remarkable!
+  </title>
+  <link href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/styles/github.min.css" rel="stylesheet"/>
+  <style type="text/css">
+   body,table tr{background-color:#fff}table tr td,table tr th{border:1px solid #ccc;text-align:left;padding:6px 13px;margin:0}pre code,table,table tr{padding:0}hr,pre code{background:0 0}body{font:16px Helvetica,Arial,sans-serif;line-height:1.4;color:#333;word-wrap:break-word;padding:10px 15px}strong,table tr th{font-weight:700}h1{font-size:2em;margin:.67em 0;text-align:center}h2{font-size:1.75em}h3{font-size:1.5em}h4{font-size:1.25em}h1,h2,h3,h4,h5,h6{font-weight:700;position:relative;margin-top:15px;margin-bottom:15px;line-height:1.1}h1,h2{border-bottom:1px solid #eee}hr{height:0;margin:15px 0;overflow:hidden;border:0;border-bottom:1px solid #ddd}a{color:#4183C4}a.absent{color:#c00}ol,ul{padding-left:15px;margin-left:5px}ol{list-style-type:lower-roman}table tr{border-top:1px solid #ccc;margin:0}table tr:nth-child(2n){background-color:#aaa}table tr td :first-child,table tr th :first-child{margin-top:0}table tr td:last-child,table tr th :last-child{margin-bottom:0}img{max-width:100%}blockquote{padding:0 15px;border-left:4px solid #ccc}code,tt{margin:0 2px;padding:0 5px;white-space:nowrap;border:1px solid #eaeaea;background-color:#f8f8f8;border-radius:3px}pre code{margin:0;white-space:pre;border:none}.highlight pre,pre{background-color:#f8f8f8;border:1px solid #ccc;font-size:13px;line-height:19px;overflow:auto;padding:6px 10px;border-radius:3px}
+  </style>
+ </head>
+ <body>
+  <h1 id="machine-learning-engineer-nanodegree">
+   Machine Learning Engineer Nanodegree
+  </h1>
+  <h2 id="capstone-project">
+   Capstone Project
+  </h2>
+  <p>
+   Chuan Hong
+  </p>
+  <p>
+   December 28, 2018
+  </p>
+  <h2 id="i-definition">
+   I. Definition
+  </h2>
+  <h3 id="project-overview">
+   Project Overview
+  </h3>
+  <p>
+   Generative Adversarial Networks (GANs), are a framework first proposed by Ian J. Goodfellow
+   <sup id="fnref:i.goodfellow">
+    <a class="footnote-ref" href="#fn:i.goodfellow" rel="footnote">
+     1
+    </a>
+   </sup>
+   in 2014. GANs are usually trained to generate new samples similar to the training samples by teaching a DL model to estimate the training data’s distribution. GANs have become one of the most popular topic on both research side and application side in the deep learning community for its various applications in image/video generation, image-to-image translation, style transfer, etc.
+  </p>
+  <p>
+   A typical GAN usually includes two separate networks being trained simultaneously: a generative model, called the generator or
+   <strong>
+    G
+   </strong>
+   , captures the data distribution and produces “fake” samples, and a discriminative model, called the discriminator or
+   <strong>
+    D
+   </strong>
+   , estimates the probability that a sample came from the training data rather than the generator. In this project, we implemented several GANs frameworks and compared their performance on three simple image datasets, including MNIST
+   <sup id="fnref:MNIST">
+    <a class="footnote-ref" href="#fn:MNIST" rel="footnote">
+     2
+    </a>
+   </sup>
+   , FashionMNIST
+   <sup id="fnref:Fashion-MNIST">
+    <a class="footnote-ref" href="#fn:Fashion-MNIST" rel="footnote">
+     3
+    </a>
+   </sup>
+   , and CartoonSet10k
+   <sup id="fnref:CartoonSet10k">
+    <a class="footnote-ref" href="#fn:CartoonSet10k" rel="footnote">
+     4
+    </a>
+   </sup>
+   .
+  </p>
+  <h3 id="problem-statement">
+   Problem Statement
+  </h3>
+  <p>
+   Although GANs have been successful in the field of image generation, training process instabilities remains a significant issue
+   <sup id="fnref:m.lucic">
+    <a class="footnote-ref" href="#fn:m.lucic" rel="footnote">
+     5
+    </a>
+   </sup>
+   . When using gradient descent techniques to train GANs, the algorithm may oscillate, destabilize, and fail to converge for many games.
+   <sup id="fnref:l.metz">
+    <a class="footnote-ref" href="#fn:l.metz" rel="footnote">
+     6
+    </a>
+   </sup>
+   Other issues that GAN models may suffer include Model collapse, disminished gradient, etc.
+  </p>
+  <p>
+   While a theoretical understanding is needed to improve the fundamental stability of GANs
+   <sup id="fnref:m.arjovsky">
+    <a class="footnote-ref" href="#fn:m.arjovsky" rel="footnote">
+     7
+    </a>
+   </sup>
+   , there are a variety of approaches that might help with GAN training issues
+   <sup id="fnref:t.salimans">
+    <a class="footnote-ref" href="#fn:t.salimans" rel="footnote">
+     8
+    </a>
+   </sup>
+   . In this project we will experiment several different network architecures, cost functions, and other implementation tips on image data and compare their results.
+  </p>
+  <p>
+   Due to the limited time frame of the project, we were only be able to implement the following 4 types of GANs. Other promising GANs and designs can be easily added to the existing framework and will be implemented in the near future.
+  </p>
+  <ul>
+   <li>
+    <strong>
+     vanilla GAN
+    </strong>
+    (vanillaGAN): the original GAN which uses linear layers in both G and D, respectively.
+   </li>
+   <li>
+    <strong>
+     conditional GAN
+    </strong>
+    (cGAN)
+    <sup id="fnref:m.mirza">
+     <a class="footnote-ref" href="#fn:m.mirza" rel="footnote">
+      9
+     </a>
+    </sup>
+    : the conditional version of vanilla GAN, which feeds the target y on to both the G and D.
+   </li>
+   <li>
+    <strong>
+     deep convolutional GAN
+    </strong>
+    (DCGAN)
+    <sup id="fnref:a.radford">
+     <a class="footnote-ref" href="#fn:a.radford" rel="footnote">
+      10
+     </a>
+    </sup>
+    : a direct extension of the vanilla GAN which uses convolutional and convolutional-transpose layers in the D and G, respectively.
+   </li>
+   <li>
+    <strong>
+     conditional DCGAN
+    </strong>
+    : the conditional version of DCGAN.
+   </li>
+  </ul>
+  <h3 id="metrics">
+   Metrics
+  </h3>
+  <p>
+   GANs lack an objective function, which makes it difficult to compare performance of different models. Although several measures have been introduced, there is still no consensus as to which measure should be used for fair model comparison. In this porject, we directly compared the generated sample images at different epochs across different GANs.
+  </p>
+  <h2 id="ii-analysis">
+   II. Analysis
+  </h2>
+  <h3 id="data-exploration">
+   Data Exploration
+  </h3>
+  <p>
+   Below is a summary of the datasets used in the project. The MNIST and Fashion-MNIST datasets are loaded directly from
+   <code>
+    torchvision.datasets
+   </code>
+   . A customized dataset Class was implemented for loading both images and labels of CartoonSet.
+  </p>
+  <ol>
+   <li>
+    <p>
+     MNIST
+     <sup id="fnref2:MNIST">
+      <a class="footnote-ref" href="#fn:MNIST" rel="footnote">
+       2
+      </a>
+     </sup>
+    </p>
+    <ul>
+     <li>
+      The MNIST database of handwritten digits has a training set of 60,000 examples, and a test set of 10,000 examples.
+     </li>
+     <li>
+      The digits have been size-normalized and centered in a 28x28 grayscale image.
+     </li>
+     <li>
+      The labels are digits ranged from 0 to 9
+     </li>
+    </ul>
+    <p>
+     <img alt="MNIST" src="./images/mnist.png" title="MNIST"/>
+     <br/>
+     <em>
+      Fig. 1. Sample images from MNIST dataset
+     </em>
+    </p>
+   </li>
+   <li>
+    <p>
+     Fashion-MNIST
+     <sup id="fnref2:Fashion-MNIST">
+      <a class="footnote-ref" href="#fn:Fashion-MNIST" rel="footnote">
+       3
+      </a>
+     </sup>
+    </p>
+    <ul>
+     <li>
+      Fashion-MNIST consists of a training set of 60,000 examples and a test set of 10,000 examples.
+     </li>
+     <li>
+      Each example is a 28x28 grayscale image, associated with a label from 10 classes.
+     </li>
+     <li>
+      Target variable ranges from 0 to 9
+     </li>
+    </ul>
+    <p>
+     <img alt="FashionMNIST" src="./images/fashionmnist.png" title="FashionMNIST"/>
+     <br/>
+     <em>
+      Fig. 2. Sample images from Fashion-MNIST dataset
+     </em>
+    </p>
+   </li>
+   <li>
+    <p>
+     CartoonSet10k
+     <sup id="fnref2:CartoonSet10k">
+      <a class="footnote-ref" href="#fn:CartoonSet10k" rel="footnote">
+       4
+      </a>
+     </sup>
+    </p>
+    <ul>
+     <li>
+      Each cartoon face in these sets is composed of 16 components that vary in 10 artwork attributes, 4 color attributes, and 4 proportion attributes.
+     </li>
+     <li>
+      Colors are chosen from a discrete set of RGB values.
+     </li>
+     <li>
+      The dataset consists of 10k randomly chosen cartoons and labeled attributes from a total of ~10
+      <sup>
+       13
+      </sup>
+      possible combinations.
+     </li>
+     <li>
+      The cartoon faces have been centered and chopped in a 75x75 color image.
+     </li>
+     <li>
+      The list of attributes can be found via
+      <a href="">
+      </a>
+      <a href="https://google.github.io/cartoonset/download.html">
+       https://google.github.io/cartoonset/download.html
+      </a>
+     </li>
+    </ul>
+    <p>
+     <img alt="CartoonSet" src="./images/cartoon.png" title="CartoonSet"/>
+     <br/>
+     <em>
+      Fig. 3. Sample images from CartoonSet10k dataset
+     </em>
+    </p>
+   </li>
+  </ol>
+  <h3 id="algorithms-and-techniques">
+   Algorithms and Techniques
+  </h3>
+  <p>
+   <strong>
+    vanilla GAN
+   </strong>
+  </p>
+  <p>
+   The main building blocks for vanilla GAN models are Linear layers (
+   <code>
+    nn.Linear
+   </code>
+   ) and activation layers after each linear layer:
+   <br/>
+   - for G, the output range is (-1, 1) and therefore we used
+   <code>
+    nn.Tanh
+   </code>
+   as the final activation layer
+   <br/>
+   - for D, the output range is (0, 1) and therefore the final activation layer is
+   <code>
+    nn.Sigmoid
+   </code>
+   .
+   <br/>
+   - for hidden activation layers,
+   <code>
+    nn.ReLU
+   </code>
+   and
+   <code>
+    nn.LeakyReLU
+   </code>
+   are used for G and D respectively.
+  </p>
+  <p>
+   In addition, the input of D and the output of G are both 4D tensors of shape (N, C, H, W), where N is a batch size, C denotes a number of channels, H is a height of input planes in pixels, and W is width in pixels. Hense we added a Flatten layer at the begining of D and a UnFlatten layer at the end of G.
+  </p>
+  <p>
+   The simplified network structures are:
+   <br/>
+   - G:
+   <code>
+    nn.Linear
+   </code>
+   &amp;rightarrow;
+   <code>
+    nn.ReLU
+   </code>
+   &amp;rightarrow; [
+   <code>
+    nn.Linear
+   </code>
+   &amp;rightarrow;
+   <code>
+    nn.BatchNorm1d
+   </code>
+   &amp;rightarrow;
+   <code>
+    nn.ReLU
+   </code>
+   ] &amp;rightarrow; … &amp;rightarrow;
+   <code>
+    nn.Linear
+   </code>
+   &amp;rightarrow;
+   <code>
+    nn.Tanh
+   </code>
+   &amp;rightarrow;
+   <code>
+    UnFlatten
+   </code>
+   <br/>
+   - D:
+   <code>
+    Flatten
+   </code>
+   &amp;rightarrow; [
+   <code>
+    nn.Linear
+   </code>
+   &amp;rightarrow;
+   <code>
+    nn.LeakyReLU
+   </code>
+   ] &amp;rightarrow; … &amp;rightarrow;
+   <code>
+    nn.Linear
+   </code>
+   &amp;rightarrow;
+   <code>
+    nn.Sigmoid
+   </code>
+  </p>
+  <p>
+   Note: The […] indicates a block that repeats multiple times in a network.  An normalization layer (
+   <code>
+    nn.BatchNorm1d
+   </code>
+   ) was added after each hidden Linear layer in G.
+  </p>
+  <p>
+   <strong>
+    conditional GAN
+   </strong>
+  </p>
+  <p>
+   The structure of cGAN is similar to vanillaGAN except that the target variable is added to both G and D to provide additional information about the image. To add the target variable y, we first encoded it using one hot encoding and then concatenated with the input before feeding to the networks.
+  </p>
+  <p>
+   <strong>
+    deep convolutional GAN
+   </strong>
+  </p>
+  <p>
+   The main difference between DCGAN and vanillaGAN is DCGAN uses convolutional layers in D for down sampling and 2D transposed convolutional layers in G for up sampling instead of linear layers. Besides, the Flatten layer is added to the end of D and the UnFlatten layer is added to the beginning of G since the data remains a 4D tensor throughout the convolutional layers.
+  </p>
+  <p>
+   The simplified network structures are:
+   <br/>
+   - G:
+   <code>
+    UnFlatten
+   </code>
+   &amp;rightarrow; [
+   <code>
+    nn.ConvTranspose2d
+   </code>
+   &amp;rightarrow;
+   <code>
+    nn.BatchNorm2d
+   </code>
+   &amp;rightarrow;
+   <code>
+    nn.ReLU
+   </code>
+   ] &amp;rightarrow; … &amp;rightarrow;
+   <code>
+    nn.ConvTranspose2d
+   </code>
+   &amp;rightarrow;
+   <code>
+    nn.Tanh
+   </code>
+   <br/>
+   - D:
+   <code>
+    nn.Conv2d
+   </code>
+   &amp;rightarrow;
+   <code>
+    nn.LeakyReLU
+   </code>
+   &amp;rightarrow; [
+   <code>
+    nn.Conv2d
+   </code>
+   &amp;rightarrow;
+   <code>
+    nn.BatchNorm2d
+   </code>
+   &amp;rightarrow;
+   <code>
+    nn.LeakyReLU
+   </code>
+   ] &amp;rightarrow; … &amp;rightarrow;
+   <code>
+    nn.Conv2d
+   </code>
+   &amp;rightarrow;
+   <code>
+    nn.Sigmoid
+   </code>
+   &amp;rightarrow;
+   <code>
+    Flatten
+   </code>
+  </p>
+  <p>
+   <strong>
+    conditional DCGAN
+   </strong>
+  </p>
+  <p>
+   A conditional version of DCGAN.
+   <br/>
+   - In G, the one-hot encoded target was concatenated with the input before feeding to the convolutional layers.
+   <br/>
+   - In D, we first feed the input to the convolutional layer and then concatenate the output with the target variable. We then apply another linear layers to it to get the final output.
+  </p>
+  <p>
+   <strong>
+    Loss
+   </strong>
+  </p>
+  <p>
+   We chose the Binary Cross Entropy loss
+   <code>
+    nn.BCELoss
+   </code>
+   for the generator and the discriminator:
+  </p>
+  <p>
+   <mathjax>
+    $$\ell_G  =  -\mathbb{E}_{z \sim p(z)}\left[\log D(G(z))\right]$$
+   </mathjax>
+  </p>
+  <p>
+   <mathjax>
+    $$ \ell_D = -\mathbb{E}_{x \sim p_\text{data}}\left[\log D(x)\right] - \mathbb{E}_{z \sim p(z)}\left[\log \left(1-D(G(z))\right)\right]$$
+   </mathjax>
+  </p>
+  <p>
+   <strong>
+    Training
+   </strong>
+  </p>
+  <p>
+   There are two steps to train a GAN. The pseudo code below descirbes how GAN is trained:
+  </p>
+  <pre><code>for each epoch:
+    for each mini_batch:
+        # generate random noize
+        generate random_noise of the same batch size
+        # generate fake samples
+        fake_samples = G(random_noise)
+        # update network D
+        loss_real = loss(D(real_samples), 1)
+        loss_fake = loss(D(fake_samples), 0)
+        d_loss = loss_real + loss_fake
+        update parameters in D by minimizing d_loss with G fixed
+        # update network G
+        g_loss = loss(D(fake_samples), 1)
+        update parameters in G by minimizing g_loss with D fixed
+</code></pre>
+  <h3 id="benchmark">
+   Benchmark
+  </h3>
+  <p>
+   We use the vanilla GAN as our benchmark model. Many recent researches suggest that the Fréchet Inception Distance (FID score)
+   <sup id="fnref:m.heusel">
+    <a class="footnote-ref" href="#fn:m.heusel" rel="footnote">
+     11
+    </a>
+   </sup>
+   is a reasonable metric due to its robustness with respect to mode dropping and encoding network choices
+   <sup id="fnref2:m.lucic">
+    <a class="footnote-ref" href="#fn:m.lucic" rel="footnote">
+     5
+    </a>
+   </sup>
+   . However implementing FID is not a trivial task. Due to the limited time frame of the project, we will leave the implementation to the future and just focus on comparing the generated images from different models.
+  </p>
+  <h2 id="iii-methodology">
+   III. Methodology
+  </h2>
+  <h3 id="data-preprocessing">
+   Data Preprocessing
+  </h3>
+  <p>
+   <code>
+    torchvision
+   </code>
+   provides very powerful APIs for loading and preprocessing image data. The MNIST and FashionMNIST have very similar structure and are loaded directly from
+   <code>
+    torchvision.datasets
+   </code>
+   . The original datasets are in the range of [0, 1], so I transformed it to [-1, 1] by applying the
+   <code>
+    Normalize(mean=0.5, std=0.5)
+   </code>
+   transformation.
+  </p>
+  <p>
+   For the CartoonSet, each image is associated with a csv file which includes the 13 attributes of that image. Therefore I implemented a data class
+   <code>
+    CartoonSet
+   </code>
+   inherited from
+   <code>
+    data.Dataset
+   </code>
+   for loading both images and labels of CartoonSet. The cartoon faces then were centered and chopped into a 75x75 color image. Finally the same normalization was applied to produce data in the range of [-1, 1].
+  </p>
+  <h3 id="implementation">
+   Implementation
+  </h3>
+  <p>
+   The implementation can be split into two main parts: The module, which includes the implementation of all reusable models, layers, functions, etc, and the notebooks, which focus on high level end-to-end workflow.
+  </p>
+  <p>
+   The gans module is organized as:
+  </p>
+  <ul>
+   <li>
+    model
+    <ul>
+     <li>
+      vanillaGAN:
+      <code>
+       Generator
+      </code>
+      ,
+      <code>
+       Discriminator
+      </code>
+     </li>
+     <li>
+      conditionalGAN:
+      <code>
+       ConditionalGenerator
+      </code>
+      ,
+      <code>
+       ConditionalDiscriminator
+      </code>
+     </li>
+     <li>
+      dcGAN:
+      <code>
+       DCGenerator
+      </code>
+      ,
+      <code>
+       DCDiscriminator
+      </code>
+     </li>
+     <li>
+      conditionalDCGAN:
+      <code>
+       CondDCGenerator
+      </code>
+      ,
+      <code>
+       CondDCDiscriminator
+      </code>
+     </li>
+    </ul>
+   </li>
+   <li>
+    utils
+    <ul>
+     <li>
+      data:
+      <code>
+       CartoonSet
+      </code>
+     </li>
+     <li>
+      functions:
+      <code>
+       gif_generator
+      </code>
+      ,
+      <code>
+       weights_init
+      </code>
+      <br/>
+      *layers:
+      <code>
+       Flatten
+      </code>
+      ,
+      <code>
+       Unflatten2d
+      </code>
+      ,
+      <code>
+       OneHotEncoder
+      </code>
+     </li>
+    </ul>
+   </li>
+   <li>
+    trainer:
+    <code>
+     GANTrainer
+    </code>
+    ,
+    <code>
+     CGANTrainer
+    </code>
+   </li>
+  </ul>
+  <p>
+   The notebooks all follow the same workflow:
+  </p>
+  <p>
+   import libraries &amp;rightarrow; set parameters &amp;rightarrow; load dataset &amp;rightarrow; create G and D &amp;rightarrow; train models &amp;rightarrow; generate charts/images
+  </p>
+  <h3 id="refinement">
+   Refinement
+  </h3>
+  <p>
+   In this project, a great amount of effort has been spent on testing different neural network structures and adjusting the parameters for the neural network layers. Most of the tests fail to generate valid images or crush during the training process with no clear reasons.
+  </p>
+  <p>
+   Besides, I also tried to make the models adjustable to different image sizes. The current implementation can be applied to the three datasets we mentioned above without the need of custimization.
+  </p>
+  <h2 id="iv-results">
+   IV. Results
+  </h2>
+  <h3 id="model-evaluation-and-validation">
+   Model Evaluation and Validation
+  </h3>
+  <p>
+   We now compare the performance of different GAN models by showing the generated images and the training losses.
+  </p>
+  <p>
+   <strong>
+    MNIST
+   </strong>
+  </p>
+  <ol>
+   <li>
+    <p>
+     VanillaGAN
+     <br/>
+     <img alt="" src="images/mnist/vanillagan/fake_samples_epoch_001.png"/>
+     <img alt="" src="images/mnist/vanillagan/fake_samples_epoch_005.png"/>
+     <img alt="" src="images/mnist/vanillagan/fake_samples_epoch_010.png"/>
+     <img alt="" src="images/mnist/vanillagan/fake_samples_epoch_020.png"/>
+     <img alt="" src="images/mnist/vanillagan/fake_samples_epoch_050.png"/>
+     <br/>
+     <em>
+      Fig. 4a. Sample images after epoch 1, 5, 10, 20, and 50
+     </em>
+     <br/>
+     <img alt="" src="images/mnist/vanillagan/g_d_loss.png"/>
+     <br/>
+     <em>
+      Fig. 4b. Training losses for G and D
+     </em>
+    </p>
+   </li>
+   <li>
+    <p>
+     DCGAN
+     <br/>
+     <img alt="" src="images/mnist/dcgan/fake_samples_epoch_001.png"/>
+     <img alt="" src="images/mnist/dcgan/fake_samples_epoch_005.png"/>
+     <img alt="" src="images/mnist/dcgan/fake_samples_epoch_010.png"/>
+     <img alt="" src="images/mnist/dcgan/fake_samples_epoch_020.png"/>
+     <img alt="" src="images/mnist/dcgan/fake_samples_epoch_050.png"/>
+     <br/>
+     <em>
+      Fig. 5a. Sample images after epoch 1, 5, 10, 20, and 50
+     </em>
+     <br/>
+     <img alt="" src="images/mnist/dcgan/g_d_loss.png"/>
+     <br/>
+     <em>
+      Fig. 5b. Training losses for G and D
+     </em>
+    </p>
+   </li>
+   <li>
+    <p>
+     cGAN
+     <br/>
+     <img alt="" src="images/mnist/cgan/fake_samples_epoch_001.png"/>
+     <img alt="" src="images/mnist/cgan/fake_samples_epoch_005.png"/>
+     <img alt="" src="images/mnist/cgan/fake_samples_epoch_010.png"/>
+     <img alt="" src="images/mnist/cgan/fake_samples_epoch_020.png"/>
+     <img alt="" src="images/mnist/cgan/fake_samples_epoch_050.png"/>
+     <br/>
+     <em>
+      Fig. 6a. Sample images after epoch 1, 5, 10, 20, and 50
+     </em>
+     <br/>
+     <img alt="" src="images/mnist/cgan/g_d_loss.png"/>
+     <br/>
+     <em>
+      Fig. 6b. Training losses for G and D
+     </em>
+    </p>
+   </li>
+   <li>
+    <p>
+     conditional DCGAN
+     <br/>
+     <img alt="" src="images/mnist/cdcgan/fake_samples_epoch_001.png"/>
+     <img alt="" src="images/mnist/cdcgan/fake_samples_epoch_005.png"/>
+     <img alt="" src="images/mnist/cdcgan/fake_samples_epoch_010.png"/>
+     <img alt="" src="images/mnist/cdcgan/fake_samples_epoch_020.png"/>
+     <img alt="" src="images/mnist/cdcgan/fake_samples_epoch_050.png"/>
+     <br/>
+     <em>
+      Fig. 7a. Sample images after epoch 1, 5, 10, 20, and 50
+     </em>
+     <br/>
+     <img alt="" src="images/mnist/cdcgan/g_d_loss.png"/>
+     <br/>
+     <em>
+      Fig. 7b. Training losses for G and D
+     </em>
+    </p>
+   </li>
+  </ol>
+  <p>
+   <strong>
+    FashionMNIST
+   </strong>
+  </p>
+  <ol>
+   <li>
+    <p>
+     VanillaGAN
+     <br/>
+     <img alt="" src="images/fashionmnist/vanillagan/fake_samples_epoch_001.png"/>
+     <img alt="" src="images/fashionmnist/vanillagan/fake_samples_epoch_005.png"/>
+     <img alt="" src="images/fashionmnist/vanillagan/fake_samples_epoch_010.png"/>
+     <img alt="" src="images/fashionmnist/vanillagan/fake_samples_epoch_020.png"/>
+     <img alt="" src="images/fashionmnist/vanillagan/fake_samples_epoch_050.png"/>
+     <br/>
+     <em>
+      Fig. 8a. Sample images after epoch 1, 5, 10, 20, and 50
+     </em>
+     <br/>
+     <img alt="" src="images/fashionmnist/vanillagan/g_d_loss.png"/>
+     <br/>
+     <em>
+      Fig. 8b. Training losses for G and D
+     </em>
+    </p>
+   </li>
+   <li>
+    <p>
+     DCGAN
+     <br/>
+     <img alt="" src="images/fashionmnist/dcgan/fake_samples_epoch_001.png"/>
+     <img alt="" src="images/fashionmnist/dcgan/fake_samples_epoch_005.png"/>
+     <img alt="" src="images/fashionmnist/dcgan/fake_samples_epoch_010.png"/>
+     <img alt="" src="images/fashionmnist/dcgan/fake_samples_epoch_020.png"/>
+     <img alt="" src="images/fashionmnist/dcgan/fake_samples_epoch_050.png"/>
+     <br/>
+     <em>
+      Fig. 9a. Sample images after epoch 1, 5, 10, 20, and 50
+     </em>
+     <br/>
+     <img alt="" src="images/fashionmnist/dcgan/g_d_loss.png"/>
+     <br/>
+     <em>
+      Fig. 9b. Training losses for G and D
+     </em>
+    </p>
+   </li>
+   <li>
+    <p>
+     cGAN
+     <br/>
+     <img alt="" src="images/fashionmnist/cgan/fake_samples_epoch_001.png"/>
+     <img alt="" src="images/fashionmnist/cgan/fake_samples_epoch_005.png"/>
+     <img alt="" src="images/fashionmnist/cgan/fake_samples_epoch_010.png"/>
+     <img alt="" src="images/fashionmnist/cgan/fake_samples_epoch_020.png"/>
+     <img alt="" src="images/fashionmnist/cgan/fake_samples_epoch_050.png"/>
+     <br/>
+     <em>
+      Fig. 10a. Sample images after epoch 1, 5, 10, 20, and 50
+     </em>
+     <br/>
+     <img alt="" src="images/fashionmnist/cgan/g_d_loss.png"/>
+     <br/>
+     <em>
+      Fig. 10b. Training losses for G and D
+     </em>
+    </p>
+   </li>
+   <li>
+    <p>
+     conditional DCGAN
+     <br/>
+     <img alt="" src="images/fashionmnist/cdcgan/fake_samples_epoch_001.png"/>
+     <img alt="" src="images/fashionmnist/cdcgan/fake_samples_epoch_005.png"/>
+     <img alt="" src="images/fashionmnist/cdcgan/fake_samples_epoch_010.png"/>
+     <img alt="" src="images/fashionmnist/cdcgan/fake_samples_epoch_020.png"/>
+     <img alt="" src="images/fashionmnist/cdcgan/fake_samples_epoch_050.png"/>
+     <br/>
+     <em>
+      Fig. 11a. Sample images after epoch 1, 5, 10, 20, and 50
+     </em>
+     <br/>
+     <img alt="" src="images/fashionmnist/cdcgan/g_d_loss.png"/>
+     <br/>
+     <em>
+      Fig. 11b. Training losses for G and D
+     </em>
+    </p>
+   </li>
+  </ol>
+  <p>
+   <strong>
+    CartoonSet
+   </strong>
+  </p>
+  <ol>
+   <li>
+    <p>
+     VanillaGAN
+     <br/>
+     <img alt="" src="images/cartoonset/vanillagan/fake_samples_epoch_005.png"/>
+     <img alt="" src="images/cartoonset/vanillagan/fake_samples_epoch_020.png"/>
+     <img alt="" src="images/cartoonset/vanillagan/fake_samples_epoch_050.png"/>
+     <br/>
+     <em>
+      Fig. 12a. Sample images after epoch 5, 20, and 50
+     </em>
+     <br/>
+     <img alt="" src="images/cartoonset/vanillagan/g_d_loss.png"/>
+     <br/>
+     <em>
+      Fig. 12b. Training losses for G and D
+     </em>
+    </p>
+   </li>
+   <li>
+    <p>
+     DCGAN
+     <br/>
+     <img alt="" src="images/cartoonset/dcgan/fake_samples_epoch_005.png"/>
+     <img alt="" src="images/cartoonset/dcgan/fake_samples_epoch_020.png"/>
+     <img alt="" src="images/cartoonset/dcgan/fake_samples_epoch_050.png"/>
+     <br/>
+     <em>
+      Fig. 13a. Sample images after epoch 5, 20, and 50
+     </em>
+     <br/>
+     <img alt="" src="images/cartoonset/dcgan/g_d_loss.png"/>
+     <br/>
+     <em>
+      Fig. 13b. Training losses for G and D
+     </em>
+    </p>
+   </li>
+  </ol>
+  <h3 id="justification">
+   Justification
+  </h3>
+  <p>
+   By comparing the results of different models with the benchmark model, we can see that:
+  </p>
+  <ol>
+   <li>
+    The images generated from the vanilla GAN, our benchmark model, which only includes fully connected linear layers, are noisy and not quite stable.
+   </li>
+   <li>
+    Adding conditions to G and D can generate images conditioned on class labels. In addition, the generated images seems more stable than those without conditions.
+   </li>
+   <li>
+    The deep convolutional version GANs in general outperform the original GANs. The images generated from DCGANs are less noisy, have sharper boundaries and brighter colors.
+   </li>
+  </ol>
+  <p>
+   However, we also observe the model collapse issues in some cases in which the losses are no longer changing after several epochs.  (see
+   <em>
+    Fig. 4b
+   </em>
+   and
+   <em>
+    Fig. 12b
+   </em>
+   )
+  </p>
+  <h2 id="v-conclusion">
+   V. Conclusion
+  </h2>
+  <h3 id="free-form-visualization">
+   Free-Form Visualization
+  </h3>
+  <p>
+   Here we include the animated GIFs to show the training process of different GANs on MNIST dataset.
+  </p>
+  <p>
+   <img alt="" src="images/mnist/vanillagan/animation.gif"/>
+   <img alt="" src="images/mnist/cgan/animation.gif"/>
+   <img alt="" src="images/mnist/dcgan/animation.gif"/>
+   <img alt="" src="images/mnist/cdcgan/animation.gif"/>
+   <br/>
+   <em>
+    Fig. 14. animated model performance at different epoch. From left to right: vanillaGAN, cGAN, DCGAN, cDCGAN
+   </em>
+  </p>
+  <h3 id="reflection">
+   Reflection
+  </h3>
+  <p>
+   It’s been more than a month since I started the capstone project. My reflection throughout the entire project can be summarized as:
+  </p>
+  <ol>
+   <li>
+    A comprehensive literature review. The initial literature review helped me to choose GANs as my capstone topic and also get familiar with the topic.
+   </li>
+   <li>
+    Choosing and learning pyTorch. Althrought tensorflow is still the most popular deeplearning framework, however I always feel it’s not quite pythonic and quite hard for me to get used to it. After exploring various DL packages, i found that pyTorch is more promising and much easier to learn. It also saved me a lot of time configuring and debugging the models.
+   </li>
+   <li>
+    Plan ahead. Writing the proposal helped me to better understand the project itself and also anticipate the risks and challenges.
+   </li>
+   <li>
+    Reading documentations, source code from GitHub. Get started with something you aren’t familiar with is hard. During the project, I’ve spent a good amount of time reading pyTorch documentations, seaching related implementation on GitHub, which helped me a lot in terms of understaning how GANs work and how to implement neural network models.
+   </li>
+   <li>
+    Reusing code is always the goal.
+   </li>
+  </ol>
+  <h3 id="improvement">
+   Improvement
+  </h3>
+  <p>
+   There’re several improvements we can make in the furture:
+  </p>
+  <ol>
+   <li>
+    Implement and use Fréchet Inception Distance (FID score) to evaluate the quality of samples of GANs
+   </li>
+   <li>
+    Implement other GANs, such as Least Squares GAN and Wasserstein GAN.
+   </li>
+   <li>
+    Test different network structures and different hyper parameters.
+   </li>
+   <li>
+    Make the code adjustable to different image sizes and try different image dataset and video dataset.
+   </li>
+  </ol>
+  <hr/>
+  <h3 id="reference">
+   Reference
+  </h3>
+  <div class="footnote">
+   <hr/>
+   <ol>
+    <li id="fn:i.goodfellow">
+     <p>
+      Goodfellow, Ian, Jean Pouget-Abadie, Mehdi Mirza, Bing Xu, David Warde-Farley, Sherjil Ozair, Aaron Courville, and Yoshua Bengio. “Generative adversarial nets.” In Advances in neural information processing systems, pp. 2672-2680. 2014.
+      <a class="footnote-backref" href="#fnref:i.goodfellow" rev="footnote" title="Jump back to footnote 1 in the text">
+       ↩
+      </a>
+     </p>
+    </li>
+    <li id="fn:MNIST">
+     <p>
+      THE MNIST DATABASE of handwritten digits
+      <a href="">
+      </a>
+      <a href="http://yann.lecun.com/exdb/mnist/">
+       http://yann.lecun.com/exdb/mnist/
+      </a>
+      <a class="footnote-backref" href="#fnref:MNIST" rev="footnote" title="Jump back to footnote 2 in the text">
+       ↩
+      </a>
+      <a class="footnote-backref" href="#fnref2:MNIST" rev="footnote" title="Jump back to footnote 2 in the text">
+       ↩
+      </a>
+     </p>
+    </li>
+    <li id="fn:Fashion-MNIST">
+     <p>
+      Fashion-MNIST
+      <a href="">
+      </a>
+      <a href="https://github.com/zalandoresearch/fashion-mnist">
+       https://github.com/zalandoresearch/fashion-mnist
+      </a>
+      <a class="footnote-backref" href="#fnref:Fashion-MNIST" rev="footnote" title="Jump back to footnote 3 in the text">
+       ↩
+      </a>
+      <a class="footnote-backref" href="#fnref2:Fashion-MNIST" rev="footnote" title="Jump back to footnote 3 in the text">
+       ↩
+      </a>
+     </p>
+    </li>
+    <li id="fn:CartoonSet10k">
+     <p>
+      Cartoon Set 10K
+      <a href="">
+      </a>
+      <a href="https://google.github.io/cartoonset/">
+       https://google.github.io/cartoonset/
+      </a>
+      <a class="footnote-backref" href="#fnref:CartoonSet10k" rev="footnote" title="Jump back to footnote 4 in the text">
+       ↩
+      </a>
+      <a class="footnote-backref" href="#fnref2:CartoonSet10k" rev="footnote" title="Jump back to footnote 4 in the text">
+       ↩
+      </a>
+     </p>
+    </li>
+    <li id="fn:m.lucic">
+     <p>
+      Lucic, Mario, Karol Kurach, Marcin Michalski, Sylvain Gelly, and Olivier Bousquet. “Are gans created equal? a large-scale study.” In Advances in neural information processing systems, pp. 698-707. 2018.
+      <a class="footnote-backref" href="#fnref:m.lucic" rev="footnote" title="Jump back to footnote 5 in the text">
+       ↩
+      </a>
+      <a class="footnote-backref" href="#fnref2:m.lucic" rev="footnote" title="Jump back to footnote 5 in the text">
+       ↩
+      </a>
+     </p>
+    </li>
+    <li id="fn:l.metz">
+     <p>
+      Metz, Luke, Ben Poole, David Pfau, and Jascha Sohl-Dickstein. “Unrolled generative adversarial networks.” arXiv preprint arXiv:1611.02163 (2016).
+      <a class="footnote-backref" href="#fnref:l.metz" rev="footnote" title="Jump back to footnote 6 in the text">
+       ↩
+      </a>
+     </p>
+    </li>
+    <li id="fn:m.arjovsky">
+     <p>
+      Arjovsky, Martin, and Léon Bottou. “Towards principled methods for training generative adversarial networks.” arXiv preprint arXiv:1701.04862 (2017).
+      <a class="footnote-backref" href="#fnref:m.arjovsky" rev="footnote" title="Jump back to footnote 7 in the text">
+       ↩
+      </a>
+     </p>
+    </li>
+    <li id="fn:t.salimans">
+     <p>
+      Salimans, Tim, Ian Goodfellow, Wojciech Zaremba, Vicki Cheung, Alec Radford, and Xi Chen. “Improved techniques for training gans.” In Advances in Neural Information Processing Systems, pp. 2234-2242. 2016.
+      <a class="footnote-backref" href="#fnref:t.salimans" rev="footnote" title="Jump back to footnote 8 in the text">
+       ↩
+      </a>
+     </p>
+    </li>
+    <li id="fn:m.mirza">
+     <p>
+      Mirza, Mehdi, and Simon Osindero. “Conditional generative adversarial nets.” arXiv preprint arXiv:1411.1784 (2014).
+      <a class="footnote-backref" href="#fnref:m.mirza" rev="footnote" title="Jump back to footnote 9 in the text">
+       ↩
+      </a>
+     </p>
+    </li>
+    <li id="fn:a.radford">
+     <p>
+      Radford, Alec, Luke Metz, and Soumith Chintala. “Unsupervised representation learning with deep convolutional generative adversarial networks.” arXiv preprint arXiv:1511.06434 (2015).
+      <a class="footnote-backref" href="#fnref:a.radford" rev="footnote" title="Jump back to footnote 10 in the text">
+       ↩
+      </a>
+     </p>
+    </li>
+    <li id="fn:m.heusel">
+     <p>
+      Heusel, Martin, Hubert Ramsauer, Thomas Unterthiner, Bernhard Nessler, Günter Klambauer, and Sepp Hochreiter. “Gans trained by a two time-scale update rule converge to a nash equilibrium.” arXiv preprint arXiv:1706.08500 12, no. 1 (2017).
+      <a class="footnote-backref" href="#fnref:m.heusel" rev="footnote" title="Jump back to footnote 11 in the text">
+       ↩
+      </a>
+     </p>
+    </li>
+   </ol>
+  </div>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/highlight.min.js">
+  </script>
+  <script>
+   hljs.initHighlightingOnLoad();
+  </script>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   MathJax.Hub.Config({"showProcessingMessages" : false,"messageStyle" : "none","tex2jax": { inlineMath: [ [ "$", "$" ] ] }});
+  </script>
+ </body>
+</html>
