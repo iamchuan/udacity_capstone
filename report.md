@@ -46,6 +46,7 @@ Below is a summary of the datasets used in the project. The MNIST and Fashion-MN
 	- The labels are digits ranged from 0 to 9
 	
 	![MNIST](./images/mnist.png  "MNIST")
+	
 	*Fig. 1. Sample images from MNIST dataset*
 	
 2. Fashion-MNIST[^Fashion-MNIST]
@@ -54,6 +55,7 @@ Below is a summary of the datasets used in the project. The MNIST and Fashion-MN
 	- Target variable ranges from 0 to 9
 	
 	![FashionMNIST](./images/fashionmnist.png  "FashionMNIST")
+	
 	*Fig. 2. Sample images from Fashion-MNIST dataset*
 	
 3. CartoonSet10k[^CartoonSet10k]
@@ -64,6 +66,7 @@ Below is a summary of the datasets used in the project. The MNIST and Fashion-MN
 	- The list of attributes can be found via [https://google.github.io/cartoonset/download.html]()
 	
 	![CartoonSet](./images/cartoon.png  "CartoonSet")
+	
 	*Fig. 3. Sample images from CartoonSet10k dataset*
 
 
@@ -192,24 +195,28 @@ We now compare the performance of different GAN models by showing the generated 
 **MNIST**
  
 1. VanillaGAN
+
 ![](images/mnist/vanillagan/fake_samples_epoch_001.png) ![](images/mnist/vanillagan/fake_samples_epoch_005.png) ![](images/mnist/vanillagan/fake_samples_epoch_010.png) ![](images/mnist/vanillagan/fake_samples_epoch_020.png) ![](images/mnist/vanillagan/fake_samples_epoch_050.png)
 *Fig. 4a. Sample images after epoch 1, 5, 10, 20, and 50*
 ![](images/mnist/vanillagan/g_d_loss.png)
 *Fig. 4b. Training losses for G and D*
 
 2. DCGAN
+
 ![](images/mnist/dcgan/fake_samples_epoch_001.png) ![](images/mnist/dcgan/fake_samples_epoch_005.png) ![](images/mnist/dcgan/fake_samples_epoch_010.png) ![](images/mnist/dcgan/fake_samples_epoch_020.png) ![](images/mnist/dcgan/fake_samples_epoch_050.png)
 *Fig. 5a. Sample images after epoch 1, 5, 10, 20, and 50*
 ![](images/mnist/dcgan/g_d_loss.png)
 *Fig. 5b. Training losses for G and D*
 
 3. cGAN
+
 ![](images/mnist/cgan/fake_samples_epoch_001.png) ![](images/mnist/cgan/fake_samples_epoch_005.png) ![](images/mnist/cgan/fake_samples_epoch_010.png) ![](images/mnist/cgan/fake_samples_epoch_020.png) ![](images/mnist/cgan/fake_samples_epoch_050.png)
 *Fig. 6a. Sample images after epoch 1, 5, 10, 20, and 50*
 ![](images/mnist/cgan/g_d_loss.png)
 *Fig. 6b. Training losses for G and D*
 
 4. conditional DCGAN
+
 ![](images/mnist/cdcgan/fake_samples_epoch_001.png) ![](images/mnist/cdcgan/fake_samples_epoch_005.png) ![](images/mnist/cdcgan/fake_samples_epoch_010.png) ![](images/mnist/cdcgan/fake_samples_epoch_020.png) ![](images/mnist/cdcgan/fake_samples_epoch_050.png)
 *Fig. 7a. Sample images after epoch 1, 5, 10, 20, and 50*
 ![](images/mnist/cdcgan/g_d_loss.png)
@@ -218,24 +225,28 @@ We now compare the performance of different GAN models by showing the generated 
 **FashionMNIST**
 
 1. VanillaGAN
+
 ![](images/fashionmnist/vanillagan/fake_samples_epoch_001.png) ![](images/fashionmnist/vanillagan/fake_samples_epoch_005.png) ![](images/fashionmnist/vanillagan/fake_samples_epoch_010.png) ![](images/fashionmnist/vanillagan/fake_samples_epoch_020.png) ![](images/fashionmnist/vanillagan/fake_samples_epoch_050.png)
 *Fig. 8a. Sample images after epoch 1, 5, 10, 20, and 50*
 ![](images/fashionmnist/vanillagan/g_d_loss.png)
 *Fig. 8b. Training losses for G and D*
 
 2. DCGAN
+
 ![](images/fashionmnist/dcgan/fake_samples_epoch_001.png) ![](images/fashionmnist/dcgan/fake_samples_epoch_005.png) ![](images/fashionmnist/dcgan/fake_samples_epoch_010.png) ![](images/fashionmnist/dcgan/fake_samples_epoch_020.png) ![](images/fashionmnist/dcgan/fake_samples_epoch_050.png) 
 *Fig. 9a. Sample images after epoch 1, 5, 10, 20, and 50*
 ![](images/fashionmnist/dcgan/g_d_loss.png)
 *Fig. 9b. Training losses for G and D*
 
 3. cGAN
+
 ![](images/fashionmnist/cgan/fake_samples_epoch_001.png) ![](images/fashionmnist/cgan/fake_samples_epoch_005.png) ![](images/fashionmnist/cgan/fake_samples_epoch_010.png) ![](images/fashionmnist/cgan/fake_samples_epoch_020.png) ![](images/fashionmnist/cgan/fake_samples_epoch_050.png)
 *Fig. 10a. Sample images after epoch 1, 5, 10, 20, and 50*
 ![](images/fashionmnist/cgan/g_d_loss.png)
 *Fig. 10b. Training losses for G and D*
 
 4. conditional DCGAN
+
 ![](images/fashionmnist/cdcgan/fake_samples_epoch_001.png) ![](images/fashionmnist/cdcgan/fake_samples_epoch_005.png) ![](images/fashionmnist/cdcgan/fake_samples_epoch_010.png) ![](images/fashionmnist/cdcgan/fake_samples_epoch_020.png) ![](images/fashionmnist/cdcgan/fake_samples_epoch_050.png)
 *Fig. 11a. Sample images after epoch 1, 5, 10, 20, and 50*
 ![](images/fashionmnist/cdcgan/g_d_loss.png)
@@ -244,12 +255,14 @@ We now compare the performance of different GAN models by showing the generated 
 **CartoonSet**
 
 1. VanillaGAN
+
 ![](images/cartoonset/vanillagan/fake_samples_epoch_005.png) ![](images/cartoonset/vanillagan/fake_samples_epoch_020.png) ![](images/cartoonset/vanillagan/fake_samples_epoch_050.png)
 *Fig. 12a. Sample images after epoch 5, 20, and 50*
 ![](images/cartoonset/vanillagan/g_d_loss.png)
 *Fig. 12b. Training losses for G and D*
 
 2. DCGAN
+
 ![](images/cartoonset/dcgan/fake_samples_epoch_005.png) ![](images/cartoonset/dcgan/fake_samples_epoch_020.png) ![](images/cartoonset/dcgan/fake_samples_epoch_050.png)
 *Fig. 13a. Sample images after epoch 5, 20, and 50*
 ![](images/cartoonset/dcgan/g_d_loss.png)
@@ -274,6 +287,7 @@ However, we also observe the model collapse issues in some cases in which the lo
 Here we include the animated GIFs to show the training process of different GANs on MNIST dataset (only available on html and markdown).
 
 ![](images/mnist/vanillagan/animation.gif) ![](images/mnist/cgan/animation.gif) ![](images/mnist/dcgan/animation.gif) ![](images/mnist/cdcgan/animation.gif)
+
 *Fig. 14. animated model performance at different epoch. From left to right: vanillaGAN, cGAN, DCGAN, cDCGAN*
 
 ### Reflection
