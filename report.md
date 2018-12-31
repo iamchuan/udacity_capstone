@@ -11,7 +11,7 @@ December 28, 2018
 
 Generative Adversarial Networks (GANs), are a framework first proposed by Ian J. Goodfellow[^i.goodfellow] in 2014. GANs are usually trained to generate new samples similar to the training samples by teaching a DL model to estimate the training data’s distribution. GANs have become one of the most popular topic on both research side and application side in the deep learning community for its various applications in image/video generation, image-to-image translation, style transfer, etc. 
 
-A typical GAN usually includes two separate networks being trained simultaneously: a generative model, called the generator or **G**, captures the data distribution and produces "fake" samples, and a discriminative model, called the discriminator or **D**, estimates the probability that a sample came from the training data rather than the generator. In this project, we implemented several GANs frameworks and compared their performance on three simple image datasets, including MNIST[^MNIST], FashionMNIST[^Fashion-MNIST], and CartoonSet10k[^CartoonSet10k]. 
+A typical GAN usually includes two separate networks being trained simultaneously: a generative model, called the generator or **G**, captures the data distribution and produces "fake" samples, and a discriminative model, called the discriminator or **D**, estimates the probability that a sample came from the training data rather than the generator. In this project, we implemented several GANs frameworks using *pyTorch* and compared their performance on three simple image datasets, MNIST[^MNIST], FashionMNIST[^Fashion-MNIST], and CartoonSet10k[^CartoonSet10k]. 
 
 ### Problem Statement
 
@@ -29,6 +29,10 @@ Due to the limited time frame of the project, we were only be able to implement 
 ### Metrics
 
 GANs lack an objective function, which makes it difficult to compare performance of different models. Although several measures have been introduced, there is still no consensus as to which measure should be used for fair model comparison. In this porject, we directly compared the generated sample images at different epochs across different GANs. 
+
+Fréchet Inception Distance (FID score)[^m.heusel]  is a measure of similarity between two datasets of images. Many recent researches suggest that the FID score is a reasonable metric due to its robustness with respect to mode dropping and encoding network choices[^m.lucic]. 
+
+In addition to directly compare the generated images by humans, we also provided FID scores for each model.
 
 ## II. Analysis
 
@@ -65,6 +69,8 @@ Below is a summary of the datasets used in the project. The MNIST and Fashion-MN
 
 ### Algorithms and Techniques
 
+Below is a brief introduction of the models and techniques we used in the project.
+
 **vanilla GAN**
 
 The main building blocks for vanilla GAN models are Linear layers (`nn.Linear`) and activation layers after each linear layer: 
@@ -100,7 +106,7 @@ A conditional version of DCGAN.
 	
 **Loss**
 
-We chose the Binary Cross Entropy loss `nn.BCELoss` for the generator and the discriminator:
+We chose the Binary Cross Entropy loss `nn.BCELoss` for both G and D:
 
 $$\ell_G  =  -\mathbb{E}_{z \sim p(z)}\left[\log D(G(z))\right]$$
 
@@ -129,8 +135,7 @@ for each epoch:
 
 ### Benchmark
 
-We use the vanilla GAN as our benchmark model. Many recent researches suggest that the Fréchet Inception Distance (FID score)[^m.heusel] is a reasonable metric due to its robustness with respect to mode dropping and encoding network choices[^m.lucic]. However implementing FID is not a trivial task. Due to the limited time frame of the project, we will leave the implementation to the future and just focus on comparing the generated images from different models.
-
+We use the vanilla GAN as our benchmark model. Since implementing FID is not a trivial task, we will use an existing implementation[^mseitzer] and calculate the FID scores based on a random sample of 2048 images from the original data and from the model G.
 
 ## III. Methodology
 
@@ -174,6 +179,13 @@ Besides, I also tried to make the models adjustable to different image sizes. Th
 
 
 ### Model Evaluation and Validation
+
+The FID scores for MNIST and FashionMNIST are summarized in the table below (yhe smaller the better). The models collapsed when using CartoonSet after training for a few batches and therefore we did not evaluated their FID scores.
+
+| dataset | VanillaGAN | cGAN | DCGAN | cDCGAN |
+|-----------|-----------------|-----------|---------|------------|
+| MNIST | 29.8860039314948 | 27.60618076139116 | 7.548617460620278 | 7.420052673632085 |
+| FashionMNIST | 55.893088118384526 | 60.76478200199051 | 13.996017101103291 | 13.584223451920764 |
 
 We now compare the performance of different GAN models by showing the generated images and the training losses.
 
@@ -248,7 +260,7 @@ We now compare the performance of different GAN models by showing the generated 
 By comparing the results of different models with the benchmark model, we can see that:
 
 1. The images generated from the vanilla GAN, our benchmark model, which only includes fully connected linear layers, are noisy and not quite stable.
-2. Adding conditions to G and D can generate images conditioned on class labels. In addition, the generated images seems more stable than those without conditions.
+2. Adding conditions to G and D can generate images conditioned on class labels, which allows users to generate images that they want. In addition, it may also improve the image quality.
 3. The deep convolutional version GANs in general outperform the original GANs. The images generated from DCGANs are less noisy, have sharper boundaries and brighter colors.
 
 However, we also observe the model collapse issues in some cases in which the losses are no longer changing after several epochs.  (see *Fig. 4b* and *Fig. 12b*) 
@@ -259,7 +271,7 @@ However, we also observe the model collapse issues in some cases in which the lo
 
 ### Free-Form Visualization
 
-Here we include the animated GIFs to show the training process of different GANs on MNIST dataset.
+Here we include the animated GIFs to show the training process of different GANs on MNIST dataset (only available on html and markdown).
 
 ![](images/mnist/vanillagan/animation.gif) ![](images/mnist/cgan/animation.gif) ![](images/mnist/dcgan/animation.gif) ![](images/mnist/cdcgan/animation.gif)
 *Fig. 14. animated model performance at different epoch. From left to right: vanillaGAN, cGAN, DCGAN, cDCGAN*
@@ -278,11 +290,10 @@ It's been more than a month since I started the capstone project. My reflection 
 
 There're several improvements we can make in the furture:
 
-1. Implement and use Fréchet Inception Distance (FID score) to evaluate the quality of samples of GANs
-2. Implement other GANs, such as Least Squares GAN and Wasserstein GAN.
-3. Test different network structures and different hyper parameters.
-4. Make the code adjustable to different image sizes and try different image dataset and video dataset. 
-
+1. Implement other GANs, such as Least Squares GAN and Wasserstein GAN.
+2. Test different network structures and different hyper parameters.
+3. Make the code adjustable to different image sizes and try different image dataset and video dataset. 
+4. Try different applications using GANs, for example video frames generation, style transfer, etc.
 
 -----------
 
@@ -300,4 +311,4 @@ There're several improvements we can make in the furture:
 [^m.mirza]: Mirza, Mehdi, and Simon Osindero. "Conditional generative adversarial nets." arXiv preprint arXiv:1411.1784 (2014).
 [^a.radford]: Radford, Alec, Luke Metz, and Soumith Chintala. "Unsupervised representation learning with deep convolutional generative adversarial networks." arXiv preprint arXiv:1511.06434 (2015).
 [^m.heusel]: Heusel, Martin, Hubert Ramsauer, Thomas Unterthiner, Bernhard Nessler, Günter Klambauer, and Sepp Hochreiter. "Gans trained by a two time-scale update rule converge to a nash equilibrium." arXiv preprint arXiv:1706.08500 12, no. 1 (2017).
-
+[^mseitzer]: Github Repo: [mseitzer/pytorch-fid](https://github.com/mseitzer/pytorch-fid)

@@ -47,7 +47,11 @@
    <strong>
     D
    </strong>
-   , estimates the probability that a sample came from the training data rather than the generator. In this project, we implemented several GANs frameworks and compared their performance on three simple image datasets, including MNIST
+   , estimates the probability that a sample came from the training data rather than the generator. In this project, we implemented several GANs frameworks using
+   <em>
+    pyTorch
+   </em>
+   and compared their performance on three simple image datasets, MNIST
    <sup id="fnref:MNIST">
     <a class="footnote-ref" href="#fn:MNIST" rel="footnote">
      2
@@ -146,6 +150,24 @@
   </h3>
   <p>
    GANs lack an objective function, which makes it difficult to compare performance of different models. Although several measures have been introduced, there is still no consensus as to which measure should be used for fair model comparison. In this porject, we directly compared the generated sample images at different epochs across different GANs.
+  </p>
+  <p>
+   Fréchet Inception Distance (FID score)
+   <sup id="fnref:m.heusel">
+    <a class="footnote-ref" href="#fn:m.heusel" rel="footnote">
+     11
+    </a>
+   </sup>
+   is a measure of similarity between two datasets of images. Many recent researches suggest that the FID score is a reasonable metric due to its robustness with respect to mode dropping and encoding network choices
+   <sup id="fnref2:m.lucic">
+    <a class="footnote-ref" href="#fn:m.lucic" rel="footnote">
+     5
+    </a>
+   </sup>
+   .
+  </p>
+  <p>
+   In addition to directly compare the generated images by humans, we also provided FID scores for each model.
   </p>
   <h2 id="ii-analysis">
    II. Analysis
@@ -264,6 +286,9 @@
   <h3 id="algorithms-and-techniques">
    Algorithms and Techniques
   </h3>
+  <p>
+   Below is a brief introduction of the models and techniques we used in the project.
+  </p>
   <p>
    <strong>
     vanilla GAN
@@ -464,7 +489,7 @@
    <code>
     nn.BCELoss
    </code>
-   for the generator and the discriminator:
+   for both G and D:
   </p>
   <p>
    <mathjax>
@@ -503,19 +528,13 @@
    Benchmark
   </h3>
   <p>
-   We use the vanilla GAN as our benchmark model. Many recent researches suggest that the Fréchet Inception Distance (FID score)
-   <sup id="fnref:m.heusel">
-    <a class="footnote-ref" href="#fn:m.heusel" rel="footnote">
-     11
+   We use the vanilla GAN as our benchmark model. Since implementing FID is not a trivial task, we will use an existing implementation
+   <sup id="fnref:mseitzer">
+    <a class="footnote-ref" href="#fn:mseitzer" rel="footnote">
+     12
     </a>
    </sup>
-   is a reasonable metric due to its robustness with respect to mode dropping and encoding network choices
-   <sup id="fnref2:m.lucic">
-    <a class="footnote-ref" href="#fn:m.lucic" rel="footnote">
-     5
-    </a>
-   </sup>
-   . However implementing FID is not a trivial task. Due to the limited time frame of the project, we will leave the implementation to the future and just focus on comparing the generated images from different models.
+   and calculate the FID scores based on a random sample of 2048 images from the original data and from the model G.
   </p>
   <h2 id="iii-methodology">
    III. Methodology
@@ -669,6 +688,66 @@
   <h3 id="model-evaluation-and-validation">
    Model Evaluation and Validation
   </h3>
+  <p>
+   The FID scores for MNIST and FashionMNIST are summarized in the table below (yhe smaller the better). The models collapsed when using CartoonSet after training for a few batches and therefore we did not evaluated their FID scores.
+  </p>
+  <table>
+   <thead>
+    <tr>
+     <th>
+      dataset
+     </th>
+     <th>
+      VanillaGAN
+     </th>
+     <th>
+      cGAN
+     </th>
+     <th>
+      DCGAN
+     </th>
+     <th>
+      cDCGAN
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      MNIST
+     </td>
+     <td>
+      29.8860039314948
+     </td>
+     <td>
+      27.60618076139116
+     </td>
+     <td>
+      7.548617460620278
+     </td>
+     <td>
+      7.420052673632085
+     </td>
+    </tr>
+    <tr>
+     <td>
+      FashionMNIST
+     </td>
+     <td>
+      55.893088118384526
+     </td>
+     <td>
+      60.76478200199051
+     </td>
+     <td>
+      13.996017101103291
+     </td>
+     <td>
+      13.584223451920764
+     </td>
+    </tr>
+   </tbody>
+  </table>
   <p>
    We now compare the performance of different GAN models by showing the generated images and the training losses.
   </p>
@@ -910,7 +989,7 @@
     The images generated from the vanilla GAN, our benchmark model, which only includes fully connected linear layers, are noisy and not quite stable.
    </li>
    <li>
-    Adding conditions to G and D can generate images conditioned on class labels. In addition, the generated images seems more stable than those without conditions.
+    Adding conditions to G and D can generate images conditioned on class labels, which allows users to generate images that they want. In addition, it may also improve the image quality.
    </li>
    <li>
     The deep convolutional version GANs in general outperform the original GANs. The images generated from DCGANs are less noisy, have sharper boundaries and brighter colors.
@@ -934,7 +1013,7 @@
    Free-Form Visualization
   </h3>
   <p>
-   Here we include the animated GIFs to show the training process of different GANs on MNIST dataset.
+   Here we include the animated GIFs to show the training process of different GANs on MNIST dataset (only available on html and markdown).
   </p>
   <p>
    <img alt="" src="images/mnist/vanillagan/animation.gif"/>
@@ -977,9 +1056,6 @@
   </p>
   <ol>
    <li>
-    Implement and use Fréchet Inception Distance (FID score) to evaluate the quality of samples of GANs
-   </li>
-   <li>
     Implement other GANs, such as Least Squares GAN and Wasserstein GAN.
    </li>
    <li>
@@ -987,6 +1063,9 @@
    </li>
    <li>
     Make the code adjustable to different image sizes and try different image dataset and video dataset.
+   </li>
+   <li>
+    Try different applications using GANs, for example video frames generation, style transfer, etc.
    </li>
   </ol>
   <hr/>
@@ -1107,6 +1186,17 @@
      <p>
       Heusel, Martin, Hubert Ramsauer, Thomas Unterthiner, Bernhard Nessler, Günter Klambauer, and Sepp Hochreiter. “Gans trained by a two time-scale update rule converge to a nash equilibrium.” arXiv preprint arXiv:1706.08500 12, no. 1 (2017).
       <a class="footnote-backref" href="#fnref:m.heusel" rev="footnote" title="Jump back to footnote 11 in the text">
+       ↩
+      </a>
+     </p>
+    </li>
+    <li id="fn:mseitzer">
+     <p>
+      Github Repo:
+      <a href="https://github.com/mseitzer/pytorch-fid">
+       mseitzer/pytorch-fid
+      </a>
+      <a class="footnote-backref" href="#fnref:mseitzer" rev="footnote" title="Jump back to footnote 12 in the text">
        ↩
       </a>
      </p>
