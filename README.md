@@ -13,8 +13,8 @@
 
 ## Sample output
 
-| Model |*Vanilla GAN*|*DCGAN*|*Conditional GAN*|*Conditional DCGAN*|
-|---------|-------------|-------|-----------------|-------------------|
+| |*Vanilla GAN*|*DCGAN*|*Conditional GAN*|*Conditional DCGAN*|
+|-|-------------|-------|-----------------|-------------------|
 | MNIST |![](https://github.com/iamchuan/udacity_capstone/blob/master/images/mnist/vanillagan/animation.gif)|![](https://github.com/iamchuan/udacity_capstone/blob/master/images/mnist/dcgan/animation.gif)|![](https://github.com/iamchuan/udacity_capstone/blob/master/images/mnist/cgan/animation.gif)|![](https://github.com/iamchuan/udacity_capstone/blob/master/images/mnist/cdcgan/animation.gif)|
 | FID scores| 29.8860039314948 | 7.548617460620278 | 27.60618076139116 | 7.420052673632085 |
 | FashionMNIST |![](https://github.com/iamchuan/udacity_capstone/blob/master/images/fashionmnist/vanillagan/animation.gif)|![](https://github.com/iamchuan/udacity_capstone/blob/master/images/fashionmnist/dcgan/animation.gif)|![](https://github.com/iamchuan/udacity_capstone/blob/master/images/fashionmnist/cgan/animation.gif)|![](https://github.com/iamchuan/udacity_capstone/blob/master/images/fashionmnist/cdcgan/animation.gif)|
